@@ -19,5 +19,5 @@ START_FONT = 'arial black'
 
 # ustawienia związane z graczem
 
-PLAYER_START_POS = 0
+PLAYER_START_POS = vec(1,1)
 # ustawienia związane z duszkami
