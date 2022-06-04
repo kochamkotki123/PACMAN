@@ -18,7 +18,7 @@ class App:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         # to będzie potrzebne do poruszania się
-#         self.clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
         self.running = True
         self.state = 'start'
         self.cell_width = MAZE_WIDTH//28
@@ -32,38 +32,8 @@ class App:
         self.p_pos = None
 
         self.load()
-#         self.player = Player(self, self.p_pos)
-        self.player = Player(self, PLAYER_START_POS)
+        self.player = Player(self, self.p_pos)
         self.make_ghosts()
-        
-        #do ruchu - konfiguracja
-        self.tps_max = 100.0
-        
-        # pygame.init()
-        # self.screen=pygame.display.set_mode((700,500))
-
-        self.tps_clock = pygame.time.Clock()
-        self.tps_delta=0.0
-
-        # self.player = Player(self, self.g_pos)
-        while True:
-            #handle events
-            # for event in pygame.event.get():
-            #     if event.type == pygame.QUIT:
-            #         sys.exit(0)
-            #     elif event.type == pygame.KEYDOWN and event.key==pygame.K_ESCAPE:
-            #         sys.exit(0)
-            #Ticking
-            self.tps_delta+=self.tps_clock.tick()/1000.0
-            while self.tps_delta >1/self.tps_max:
-                self.tick()
-                self.tps_delta-=1/self.tps_max
-
-            #drawing
-            # self.screen.fill((0,0,0))
-            # self.draw()
-            # pygame.display.flip()
-        
 
 
 # pętla dzięki której gra działa do momentu wyłączenia jej przez nas
@@ -160,9 +130,6 @@ class App:
 
 # ################### PLAYING FUNCTIONS ###########################
 
-    def tick(self):
-        self.player.tick()
-        
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -180,7 +147,7 @@ class App:
 
         self.draw_points()
         # grid włączamy i wyłączamy, ja zostawiłam wyłączony
-        self.draw_grid()
+        # self.draw_grid()
 
         self.player.draw()
         for ghost in self.ghosts:
