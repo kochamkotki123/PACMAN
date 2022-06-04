@@ -8,36 +8,11 @@ class Player:
     def __init__(self, app, pos):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.app = app
-        self.starting_pos = [pos.x, pos.y]
         self.grid_pos = pos
-#         self.pix_pos = self.get_pix_pos()
-        self.pix_pos = vec((self.grid_pos.x*self.app.cell_width)+TOP_BOTTOM_BUFFER//2+self.app.cell_width//2,
-        (self.grid_pos.y*self.app.cell_height)+TOP_BOTTOM_BUFFER//2+self.app.cell_height//2)
+        self.pix_pos = self.get_pix_pos()
         self.direction = vec(1,0)
         self.stored_direction = None
         self.able_to_move = True
-        
-        self.speed=1
-        # size = self.app.screen.get_size()
-        # self.pos = vec(size[0]/2,size[1]/2)
-        self.vel = vec(0,0)
-        self.acc = vec(0,0)
-
-    def add_force(self, force):
-        self.acc+= force
-
-    def tick(self):
-        #input
-        pressed=pygame.key.get_pressed()
-        if pressed[pygame.K_UP]:
-            self.add_force(vec(0,-self.speed))
-        if pressed[pygame.K_DOWN]:
-            self.add_force(vec(0,+self.speed))
-        if pressed[pygame.K_LEFT]:
-            self.add_force(vec(-self.speed,0))
-        if pressed[pygame.K_RIGHT]:
-            self.add_force(vec(self.speed,0))
-
 
     def update(self):
 
