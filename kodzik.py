@@ -3,13 +3,6 @@ import sys
 from gracz import *
 from duszki import *
 
-# ogólna siła sprawcza, dzięki której działa program, importujemy tu pozostałe pliki
-
-if __name__=='__main__':
-    app = App()
-
-    app.run()
-
 
 # inicjuje pygame
 pygame.init()
