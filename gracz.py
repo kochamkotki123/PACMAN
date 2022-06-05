@@ -18,6 +18,8 @@ START_FONT = 'arial black'
 
 
 # ustawienia związane z graczem
+PLAYER_START_POS = 0
+
 vec = pygame.math.Vector2
 # avatar którego nie umiem jeszcze umieścić zamiast zółtej kropki
 image= pygame.image.load('start.png')
