@@ -36,10 +36,8 @@ START_TEXT_SIZE = 16
 START_FONT = 'arial black'
 
 
-# ustawienia związane z graczem
 
-PLAYER_START_POS = 0
-# ustawienia związane z duszkami
+
 
 
 
