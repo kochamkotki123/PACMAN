@@ -2,12 +2,10 @@ import pygame
 import sys
 from gracz import *
 from duszki import *
-
+from pygame.math import Vector2
 
 # inicjuje pygame
 pygame.init()
-# to będzie potrzebne przy fizycę i poruszaniu
-vec = pygame.math.Vector2
 # nazwa gry w oknie
 pygame.display.set_caption("Twój stary Pacman")
 
@@ -28,15 +26,8 @@ PLAYER_COLOUR = (190,194,15)
 START_TEXT_SIZE = 16
 START_FONT = 'arial black'
 
-
-
-
-
-
-
 # cała klasa  odpowiedzialna za grę
-
-class App:
+class Gra:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         # to będzie potrzebne do poruszania się
@@ -45,6 +36,7 @@ class App:
         self.state = 'start'
         self.cell_width = MAZE_WIDTH//28
         self.cell_height = MAZE_HEIGHT//30
+        self.gracz=Gracz(self, PLAYER_START_POS)
         self.sciany = []
         self.points = []
         self.ghosts = []
@@ -54,9 +46,8 @@ class App:
         self.p_pos = None
 
         self.load()
-        self.player = Player(self, self.p_pos)
+        self.gracz=Gracz(self, self.p_pos)
         self.make_ghosts()
-
 
 # pętla dzięki której gra działa do momentu wyłączenia jej przez nas
     def run(self):
@@ -108,14 +99,11 @@ class App:
                         self.g_pos.append(vec(xidx, yidx))
                     elif char == "E":
                         pygame.draw.rect(self.background, BLACK, (xidx*self.cell_width, yidx*self.cell_height, self.cell_width, self.cell_height))
-
         # print(self.sciany)
 
     def make_ghosts(self):
         for idx, pos in enumerate(self.g_pos):
             self.ghosts.append(Ghost(self, pos, idx))
-
-
 
 # grid to jest siatka dzięki której łatwiej się umieszcza rzeczy na ekranie i sprawdza czy coś porusza się w odpowiedniej płaszczyźnie
     def draw_grid(self):
@@ -125,9 +113,6 @@ class App:
             pygame.draw.line(self.background, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
         for point in self.points:
             pygame.draw.rect(self.background,(112,55,163), (point.x*self.cell_width, point.y*self.cell_height, self.cell_width, self.cell_height))
-
-
-
 
 # ################### INTRO FUNCTIONS ###############################
 # okno startowe gry, odpalamy za pomocą spacji
@@ -148,18 +133,24 @@ class App:
          # tu powinny znaleźć się komendy dotyczące napisów w intro itp. (przykład wyżej)
         pygame.display.update()
 
-
-
 # ################### PLAYING FUNCTIONS ###########################
 
     def playing_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-
-
+            if event.type == pygame.KEYDOWN:
+                if event.key==pygame.K_UP:
+                    self.gracz.ruch(Vector2(0,-1))
+                if event.key==pygame.K_DOWN:
+                    self.gracz.ruch(Vector2(0,1))
+                if event.key==pygame.K_LEFT:
+                    self.gracz.ruch(Vector2(-1,0))
+                if event.key==pygame.K_RIGHT:
+                    self.gracz.ruch(Vector2(1,0))
+                    
     def playing_update(self):
-        self.player.update()
+        self.gracz.update()
         for ghost in self.ghosts:
             ghost.update()
 
@@ -171,7 +162,7 @@ class App:
         # grid włączamy i wyłączamy, ja zostawiłam wyłączony
         # self.draw_grid()
 
-        self.player.draw()
+        self.gracz.draw()
         for ghost in self.ghosts:
             ghost.draw()
         pygame.display.update()
@@ -180,3 +171,8 @@ class App:
     def draw_points(self):
         for point in self.points:
             pygame.draw.circle(self.screen, (82, 210, 149), (int(point.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2, int(point.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
+
+if __name__=='__main__':
+    gra = Gra()
+    gra.run()
+            
