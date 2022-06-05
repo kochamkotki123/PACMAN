@@ -5,6 +5,6 @@ from kodzik import *
 # main odpowiada za uruchomienie kodu, F5 wciskamy w tym pliku
 
 if __name__=='__main__':
-    app = App()
+    gra = Gra()
 
-    app.run()
+    gra.run()
