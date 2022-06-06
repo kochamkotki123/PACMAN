@@ -1,5 +1,5 @@
 
-from pygame.math import Vector2 as vec
+from pygame.math import Vector2 
 # ustawienia ekranu
 WIDTH, HEIGHT = 610, 670
 FPS = 60
@@ -19,5 +19,5 @@ START_FONT = 'arial black'
 
 # ustawienia związane z graczem
 
-PLAYER_START_POS = 0
+PLAYER_START_POS = Vector2(1,1)
 # ustawienia związane z duszkami
