@@ -32,8 +32,8 @@ class Gracz:
         self.kierunek = Vector2(1,0)
         self.biezacy_kierunek = None
         self.ma_mozliwosc_ruchu = True
-        self.predkosc=1
-       
+        self.predkosc=2
+
     def update(self):
         if self.ma_mozliwosc_ruchu:
             self.pix_pos += self.kierunek*self.predkosc
@@ -58,9 +58,9 @@ class Gracz:
     def get_pix_pos(self):
         return Vector2((self.grid_pos.x*self.gra.cell_width)+TOP_BOTTOM_BUFFER//2+self.gra.cell_width//2, (self.grid_pos.y*self.gra.cell_height)+ TOP_BOTTOM_BUFFER//2+self.gra.cell_height//2)
         print(self.grid_pos, self.pix_pos)
-        
+
 #ruszanie się
-        
+
     def ruch(self, kierunek):
         self.biezacy_kierunek = kierunek
 
@@ -71,10 +71,10 @@ class Gracz:
         if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.gra.cell_height == 0:
             if self.kierunek == Vector2(0,1) or self.kierunek == Vector2(0,-1) or self.kierunek == Vector2(0, 0):
                 return True
+        return False
 
     def moze_ruszyc(self):
         for sciana in self.gra.sciany:
             if Vector2(self.grid_pos+self.kierunek)== sciana:
                 return False
         return True
-
