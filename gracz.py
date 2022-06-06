@@ -29,7 +29,7 @@ class Gracz:
         self.starting_pos = [pos.x, pos.y]
         self.grid_pos = pos
         self.pix_pos = self.get_pix_pos()
-        self.kierunek = Vector2(1,0)
+        self.kierunek = Vector2(0,0)
         self.biezacy_kierunek = None
         self.ma_mozliwosc_ruchu = True
         self.predkosc=2
