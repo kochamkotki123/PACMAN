@@ -9,7 +9,6 @@ pygame.init()
 # nazwa gry w oknie
 pygame.display.set_caption("Twój stary Pacman")
 
-from pygame.math import Vector2 as vec
 # ustawienia ekranu
 WIDTH, HEIGHT = 610, 670
 FPS = 60
@@ -39,15 +38,15 @@ class Gra:
         self.gracz=Gracz(self, PLAYER_START_POS)
         self.sciany = []
         self.points = []
-        self.ghosts = []
-# pozycja duchów(ghosts)
-        self.g_pos = []
-# pozycja pacmana
-        self.p_pos = None
+        self.duszki = []
+# pozycja duszków
+        self.d_pos = []
+# pozycja gracza
+        self.g_pos = None
 
         self.load()
-        self.gracz=Gracz(self, self.p_pos)
-        self.make_ghosts()
+        self.gracz=Gracz(self, self.g_pos)
+        self.stworz_duszki()
 
 # pętla dzięki której gra działa do momentu wyłączenia jej przez nas
     def run(self):
@@ -90,20 +89,20 @@ class Gra:
             for yidx, line in enumerate(file):
                 for xidx, char in enumerate(line):
                     if char == "1":
-                        self.sciany.append(vec(xidx, yidx))
+                        self.sciany.append(Vector2(xidx, yidx))
                     elif char == "C":
-                        self.points.append(vec(xidx, yidx))
+                        self.points.append(Vector2(xidx, yidx))
                     elif char == "P":
-                        self.p_pos = vec(xidx, yidx)
+                        self.g_pos = Vector2(xidx, yidx)
                     elif char in ["2", "3", "4", "5"]:
-                        self.g_pos.append(vec(xidx, yidx))
+                        self.d_pos.append(Vector2(xidx, yidx))
                     elif char == "E":
                         pygame.draw.rect(self.background, BLACK, (xidx*self.cell_width, yidx*self.cell_height, self.cell_width, self.cell_height))
         # print(self.sciany)
 
-    def make_ghosts(self):
-        for idx, pos in enumerate(self.g_pos):
-            self.ghosts.append(Ghost(self, pos, idx))
+    def stworz_duszki(self):
+        for idx, pos in enumerate(self.d_pos):
+            self.duszki.append(Duszek(self, pos, idx))
 
 # grid to jest siatka dzięki której łatwiej się umieszcza rzeczy na ekranie i sprawdza czy coś porusza się w odpowiedniej płaszczyźnie
     def draw_grid(self):
@@ -148,11 +147,11 @@ class Gra:
                     self.gracz.ruch(Vector2(-1,0))
                 if event.key==pygame.K_RIGHT:
                     self.gracz.ruch(Vector2(1,0))
-                    
+
     def playing_update(self):
         self.gracz.update()
-        for ghost in self.ghosts:
-            ghost.update()
+        for duszek in self.duszki:
+            duszek.update()
 
     def playing_draw(self):
         self.screen.fill(BLACK)
@@ -163,8 +162,8 @@ class Gra:
         # self.draw_grid()
 
         self.gracz.draw()
-        for ghost in self.ghosts:
-            ghost.draw()
+        for duszek in self.duszki:
+            duszek.draw()
         pygame.display.update()
 
 # punkty też nie mają na razie grafiki, umieszczone na każdym polu jak na razie
@@ -175,4 +174,3 @@ class Gra:
 if __name__=='__main__':
     gra = Gra()
     gra.run()
-            
