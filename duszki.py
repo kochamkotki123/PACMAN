@@ -15,14 +15,19 @@ class Duszek:
         self.kierunek = Vector2(0,0)
         self.usposobienie = self.ustaw_usposobienie()
         self.predkosc = self.ustaw_predkosc()
+        self.pozycja_poczatkowa=[pos[0],pos[1]]
+        self.ofiara=None
+
 
     def update(self):
-        self.pix_pos += self.kierunek*self.predkosc
-        if self.czas_na_ruch():
-            self.ruch()
+        if self.ofiara!=self.grid_pos:
+            self.ofiara=self.ustaw_ofiare()
+            self.pix_pos += self.kierunek*self.predkosc
+            if self.czas_na_ruch():
+                self.ruch()
+                        #pozycjonowako
         self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+self.gra.cell_width//2)//self.gra.cell_width+1
         self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER+self.gra.cell_height//2)//self.gra.cell_height+1
-
 
     def czas_na_ruch(self):
         if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.gra.cell_width == 0:
@@ -37,7 +42,7 @@ class Duszek:
         if self.usposobienie == "losowy":
             self.kierunek = self.losowy_kierunek()
         if self.usposobienie == "szybki" or self.usposobienie == "normalny" or self.usposobienie == "wolny":
-            self.kierunek = self.wyznacz_trase()
+            self.kierunek = self.wyznacz_trase(self.ofiara)
 
     def losowy_kierunek(self):
         while True:
@@ -55,14 +60,14 @@ class Duszek:
                 break
         return Vector2(x_dir, y_dir)
 
-    def wyznacz_trase(self):
-        nastepna_komorka = self.wyznacz_nastepna_komorke()
+    def wyznacz_trase(self,ofiara):
+        nastepna_komorka = self.wyznacz_nastepna_komorke(ofiara)
         xdir = nastepna_komorka[0] - self.grid_pos[0]
         ydir = nastepna_komorka[1] - self.grid_pos[1]
         return Vector2(xdir, ydir)
 
-    def wyznacz_nastepna_komorke(self):
-        trasa = self.przeszukaj([int(self.grid_pos.x), int(self.grid_pos.y)], [int(self.gra.gracz.grid_pos.x), int(self.gra.gracz.grid_pos.y)])
+    def wyznacz_nastepna_komorke(self,ofiara):
+        trasa = self.przeszukaj([int(self.grid_pos.x), int(self.grid_pos.y)], [ofiara.x, ofiara.y])
         return trasa[1]
 
     def przeszukaj(self, start, ofiara):
@@ -135,3 +140,17 @@ class Duszek:
         else:
             predkosc=2
         return predkosc
+
+
+    def ustaw_ofiare(self):
+        if self.usposobienie in ["wolny","szybki"]:
+            return self.gra.gracz.grid_pos
+        else:
+            if self.gra.gracz.grid_pos[0]>14 and self.gra.gracz.grid_pos[1]>15:
+                return Vector2(1,1)
+            if self.gra.gracz.grid_pos[0]>14 and self.gra.gracz.grid_pos[1]<15:
+                return Vector2(1,28)
+            if self.gra.gracz.grid_pos[0]<14 and self.gra.gracz.grid_pos[1]>15:
+                return Vector2(26,1)
+            else:
+                return Vector2(26,28)
