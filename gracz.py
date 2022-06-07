@@ -26,13 +26,15 @@ class Gracz:
     def __init__(self, gra, pos):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.gra = gra
-        self.starting_pos = [pos.x, pos.y]
-        self.grid_pos = pos
+        self.starting_pos = [pos[0], pos[1]]
+        self.grid_pos = Vector2(pos[0],pos[1])
         self.pix_pos = self.get_pix_pos()
         self.kierunek = Vector2(0,0)
         self.biezacy_kierunek = None
         self.ma_mozliwosc_ruchu = True
         self.predkosc=2
+        self.wynik=0
+        self.zycia=3
 
     def update(self):
         if self.ma_mozliwosc_ruchu:
@@ -41,16 +43,20 @@ class Gracz:
             if self.biezacy_kierunek != None:
                 self.kierunek = self.biezacy_kierunek
             self.ma_mozliwosc_ruchu = self.moze_ruszyc()
+        if self.dotknac_kulka():
+            self.zjesc_kulka()
+
 
 # pozycjonowanie troche skomplikowane średnio ogarniam więc jeżeli macie pomysły jak to ułatwić to będe wdzięczna
 
         self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+self.gra.cell_width//2)//self.gra.cell_width+1
         self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER+self.gra.cell_height//2)//self.gra.cell_height+1
 
+
+
     def draw(self):
 # żółte kółko ;-;
         pygame.draw.circle(self.gra.screen, PLAYER_COLOUR, (int(self.pix_pos.x),  int(self.pix_pos.y)), self.gra.cell_width//2-2)
-
 
 
 # pozycjonowanie znowu
@@ -78,3 +84,13 @@ class Gracz:
             if Vector2(self.grid_pos+self.kierunek)== sciana:
                 return False
         return True
+
+#zbieranie i zjadanie punkcików
+    def dotknac_kulka(self):
+        if self.grid_pos in self.gra.kulkas:
+            return True
+        return False
+
+    def zjesc_kulka(self):
+        self.gra.kulkas.remove(self.grid_pos)
+        self.wynik+=1
