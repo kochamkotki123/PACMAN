@@ -37,7 +37,7 @@ class Gra:
         self.cell_height = MAZE_HEIGHT//30
         self.gracz=Gracz(self, PLAYER_START_POS)
         self.sciany = []
-        self.points = []
+        self.kulkas = []
         self.duszki = []
 # pozycja duszków
         self.d_pos = []
@@ -95,7 +95,7 @@ class Gra:
                     if char == "1":
                         self.sciany.append(Vector2(xidx, yidx))
                     elif char == "C":
-                        self.points.append(Vector2(xidx, yidx))
+                        self.kulkas.append(Vector2(xidx, yidx))
                     elif char == "P":
                         self.g_pos = [xidx, yidx]
                     elif char in ["2", "3", "4", "5"]:
@@ -114,11 +114,11 @@ class Gra:
             pygame.draw.line(self.background, GREY, (x*self.cell_width, 0), (x*self.cell_width, HEIGHT))
         for x in range(HEIGHT//self.cell_height):
             pygame.draw.line(self.background, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
-        for point in self.points:
-            pygame.draw.rect(self.background,(112,55,163), (point.x*self.cell_width, point.y*self.cell_height, self.cell_width, self.cell_height))
+        for kulka in self.kulkas:
+            pygame.draw.rect(self.background,(112,55,163), (kulka.x*self.cell_width, kulka.y*self.cell_height, self.cell_width, self.cell_height))
 
-# ################### okno startowe ###############################
-#odpalamy za pomocą spacji
+# ################### INTRO FUNCTIONS ###############################
+# okno startowe gry, odpalamy za pomocą spacji
     def start_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -135,7 +135,7 @@ class Gra:
                        WIDTH//2, HEIGHT//2-50], START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
         pygame.display.update()
 
-# ################### w trakcie gry ###########################
+# ################### PLAYING FUNCTIONS ###########################
 
     def playing_events(self):
         for event in pygame.event.get():
@@ -164,7 +164,7 @@ class Gra:
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
 
-        self.draw_points()
+        self.draw_kulkas()
         # grid włączamy i wyłączamy, ja zostawiłam wyłączony
         #self.draw_grid()
         self.komunikat_tekstowy("twój wynik: {}".format(self.gracz.wynik),self.screen, [60, 0], 16, WHITE, START_FONT)
@@ -176,9 +176,9 @@ class Gra:
 
 
 # punkty też nie mają na razie grafiki, umieszczone na każdym polu jak na razie
-    def draw_points(self):
-        for point in self.points:
-            pygame.draw.circle(self.screen, (82, 210, 149), (int(point.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2, int(point.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
+    def draw_kulkas(self):
+        for kulka in self.kulkas:
+            pygame.draw.circle(self.screen, (82, 210, 149), (int(kulka.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2, int(kulka.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
 
 #śmierć zgon koniecżycia umieranie spoczynek unicestwienie odejście konanie
     def smierc(self):
@@ -211,6 +211,7 @@ class Gra:
         for event in pygame.event.get():
             if event.type==pygame.KEYDOWN and event.key==pygame.K_ESCAPE:
                 exit()
+
 
 
 if __name__=='__main__':
