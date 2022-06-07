@@ -59,6 +59,9 @@ class Gra:
                 self.playing_events()
                 self.playing_update()
                 self.playing_draw()
+            elif self.state=="koniec gry":
+                self.koniec_gry_okienko()
+                self.zamykanie_gry()
             else:
                 self.running = False
             self.clock.tick(FPS)
@@ -67,7 +70,7 @@ class Gra:
 
 ############################ HELPER FUNCTIONS #################
 # poniżej odpowiedzialne za wartości tekstu w naszej gierce, czcionka, wielkość
-    def draw_text(self, words, screen, pos, size, colour, font_name, centered=False):
+    def komunikat_tekstowy(self, words, screen, pos, size, colour, font_name, centered=False):
         font = pygame.font.SysFont(font_name, size)
         text = font.render(words, False, colour)
         text_size = text.get_size()
@@ -78,6 +81,7 @@ class Gra:
 
     # tu trzeba dopracować ten ekran, wyśrodkować, dodać napisy, ustalić czcionkę itp ale to moze się tym ktoś pobawić
     # to zostawiłam tylko dlatego, bo bez teo nie działa mi program XD a jest bardzo późno
+
 
 # załadowanie tła
     def load(self):
@@ -93,16 +97,16 @@ class Gra:
                     elif char == "C":
                         self.points.append(Vector2(xidx, yidx))
                     elif char == "P":
-                        self.g_pos = Vector2(xidx, yidx)
+                        self.g_pos = [xidx, yidx]
                     elif char in ["2", "3", "4", "5"]:
-                        self.d_pos.append(Vector2(xidx, yidx))
+                        self.d_pos.append([xidx, yidx])
                     elif char == "E":
                         pygame.draw.rect(self.background, BLACK, (xidx*self.cell_width, yidx*self.cell_height, self.cell_width, self.cell_height))
         # print(self.sciany)
 
     def stworz_duszki(self):
         for idx, pos in enumerate(self.d_pos):
-            self.duszki.append(Duszek(self, pos, idx))
+            self.duszki.append(Duszek(self, Vector2(pos), idx))
 
 # grid to jest siatka dzięki której łatwiej się umieszcza rzeczy na ekranie i sprawdza czy coś porusza się w odpowiedniej płaszczyźnie
     def draw_grid(self):
@@ -113,8 +117,8 @@ class Gra:
         for point in self.points:
             pygame.draw.rect(self.background,(112,55,163), (point.x*self.cell_width, point.y*self.cell_height, self.cell_width, self.cell_height))
 
-# ################### INTRO FUNCTIONS ###############################
-# okno startowe gry, odpalamy za pomocą spacji
+# ################### okno startowe ###############################
+#odpalamy za pomocą spacji
     def start_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -127,12 +131,11 @@ class Gra:
 
     def start_draw(self):
         self.screen.fill(BLACK)
-        self.draw_text('NACIŚNIJ SPACJĘ', self.screen, [
+        self.komunikat_tekstowy('NACIŚNIJ SPACJĘ', self.screen, [
                        WIDTH//2, HEIGHT//2-50], START_TEXT_SIZE, (170, 132, 58), START_FONT, centered=True)
-         # tu powinny znaleźć się komendy dotyczące napisów w intro itp. (przykład wyżej)
         pygame.display.update()
 
-# ################### PLAYING FUNCTIONS ###########################
+# ################### w trakcie gry ###########################
 
     def playing_events(self):
         for event in pygame.event.get():
@@ -152,6 +155,10 @@ class Gra:
         self.gracz.update()
         for duszek in self.duszki:
             duszek.update()
+        for duszek in self.duszki:
+            if duszek.grid_pos==self.gracz.grid_pos:
+                self.koniec()
+
 
     def playing_draw(self):
         self.screen.fill(BLACK)
@@ -159,17 +166,52 @@ class Gra:
 
         self.draw_points()
         # grid włączamy i wyłączamy, ja zostawiłam wyłączony
-        # self.draw_grid()
-
+        #self.draw_grid()
+        self.komunikat_tekstowy("twój wynik: {}".format(self.gracz.wynik),self.screen, [60, 0], 16, WHITE, START_FONT)
+        self.komunikat_tekstowy("twoje życia: {}".format(self.gracz.zycia),self.screen, [460, 0], 16, WHITE, START_FONT)
         self.gracz.draw()
         for duszek in self.duszki:
             duszek.draw()
         pygame.display.update()
 
+
 # punkty też nie mają na razie grafiki, umieszczone na każdym polu jak na razie
     def draw_points(self):
         for point in self.points:
             pygame.draw.circle(self.screen, (82, 210, 149), (int(point.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2, int(point.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
+
+#śmierć zgon koniecżycia umieranie spoczynek unicestwienie odejście konanie
+    def smierc(self):
+        if self.gracz.grid_pos in self.d_pos:
+            return True
+        return False
+
+    def koniec(self):
+        self.gracz.zycia-=1
+        if self.gracz.zycia>0:
+            self.gracz.grid_pos=Vector2(self.gracz.starting_pos)
+            self.gracz.pix_pos=self.gracz.get_pix_pos()
+            self.gracz.kierunek*=0
+            for duszek in self.duszki:
+                duszek.grid_pos=Vector2(duszek.pozycja_poczatkowa)
+                duszek.pix_pos=duszek.get_pix_pos()
+                duszek.kierunek*=0
+        if self.gracz.zycia<=0:
+            self.state="koniec gry"
+
+############okienko końcowe
+    def koniec_gry_okienko(self):
+        self.screen.fill(BLACK)
+        self.komunikat_tekstowy("koniec!",self.screen, [WIDTH//2, 100],  52, RED, START_FONT, centered=True)
+        self.komunikat_tekstowy("twój wynik: {}".format(self.gracz.wynik),self.screen, [WIDTH//2, HEIGHT//2-50], 22, (170, 132, 58), START_FONT, centered=True)
+        self.komunikat_tekstowy("wciśnij escape, by wyłączyć",self.screen, [WIDTH//2, 570], 22, GREY, START_FONT, centered=True)
+        pygame.display.update()
+
+    def zamykanie_gry(self):
+        for event in pygame.event.get():
+            if event.type==pygame.KEYDOWN and event.key==pygame.K_ESCAPE:
+                exit()
+
 
 if __name__=='__main__':
     gra = Gra()
