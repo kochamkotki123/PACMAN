@@ -83,10 +83,13 @@ class Gra:
     # to zostawiłam tylko dlatego, bo bez teo nie działa mi program XD a jest bardzo późno
 
 
-# załadowanie tła
+# załadowanie grafik
     def load(self):
         self.background = pygame.image.load('background.png')
         self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
+        
+        self.punkt = pygame.image.load("brain.png")
+        self.punkt = pygame.transform.scale(self.punkt, (15,15))
 
         # ściany, cyfra 1 to ściana, litera C punkty, P pozycja Pacmana, 2,3,4,5 pozycje duchów i E to wyjście z tego pokoiku duchów
         with open("sciany.txt", 'r') as file:
@@ -175,10 +178,12 @@ class Gra:
         pygame.display.update()
 
 
-# punkty też nie mają na razie grafiki, umieszczone na każdym polu jak na razie
-    def draw_kulkas(self):
-        for kulka in self.kulkas:
-            pygame.draw.circle(self.screen, (82, 210, 149), (int(kulka.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2, int(kulka.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2), 5)
+# rysowanie punktów- grafika (Sa pamiętaj proszę o zmienieniu nazw zmiennych <3)
+    def draw_punkty(self):
+        for punkt in self.punkty:
+            self.screen.blit(self.punkt, (int(punkt.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//3, 
+                                          int(punkt.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//3))
+    
 
 #śmierć zgon koniecżycia umieranie spoczynek unicestwienie odejście konanie
     def smierc(self):
