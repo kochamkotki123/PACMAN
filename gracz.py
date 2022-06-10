@@ -43,8 +43,8 @@ class Gracz:
             if self.biezacy_kierunek != None:
                 self.kierunek = self.biezacy_kierunek
             self.ma_mozliwosc_ruchu = self.moze_ruszyc()
-        if self.dotknac_kulka():
-            self.zjesc_kulka()
+        if self.dotknac_punkt():
+            self.zjesc_punkt()
 
 
 # pozycjonowanie troche skomplikowane średnio ogarniam więc jeżeli macie pomysły jak to ułatwić to będe wdzięczna
@@ -56,7 +56,8 @@ class Gracz:
 
     def draw(self):
 # żółte kółko ;-;
-        pygame.draw.circle(self.gra.screen, PLAYER_COLOUR, (int(self.pix_pos.x),  int(self.pix_pos.y)), self.gra.cell_width//2-2)
+#już nie! :D 
+        self.gra.screen.blit(self.gra.pacman,(int(self.pix_pos.x)-8,  int(self.pix_pos.y)-8))
 
 
 # pozycjonowanie znowu
@@ -86,11 +87,11 @@ class Gracz:
         return True
 
 #zbieranie i zjadanie punkcików
-    def dotknac_kulka(self):
-        if self.grid_pos in self.gra.kulkas:
+    def dotknac_punkt(self):
+        if self.grid_pos in self.gra.punkty:
             return True
         return False
 
-    def zjesc_kulka(self):
-        self.gra.kulkas.remove(self.grid_pos)
+    def zjesc_punkt(self):
+        self.gra.punkty.remove(self.grid_pos)
         self.wynik+=1
