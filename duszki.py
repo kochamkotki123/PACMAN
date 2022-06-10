@@ -1,26 +1,9 @@
 import pygame
 import random
+from ustawienia import *
 from pygame.math import Vector2
 
-# ustawienia ekranu
-WIDTH, HEIGHT = 610, 670
-FPS = 60
-TOP_BOTTOM_BUFFER = 50
-MAZE_WIDTH, MAZE_HEIGHT = WIDTH-TOP_BOTTOM_BUFFER, HEIGHT - TOP_BOTTOM_BUFFER
 
-# ustawienia kolorów
-BLACK = (0, 0, 0)
-RED = (208, 22, 22)
-GREY = (107, 107, 107)
-WHITE = (255,255,255)
-PLAYER_COLOUR = (190,194,15)
-# ustawienia czcionki
-START_TEXT_SIZE = 16
-START_FONT = 'arial black'
-
-# ustawienia związane z graczem
-
-PLAYER_START_POS = Vector2(1,1)
 
 # cała klasa duszków, ich ilość, pozycje
 class Duszek:
@@ -122,7 +105,15 @@ class Duszek:
 
 # umieszczenie duszków na ekranie
     def draw(self):
-        pygame.draw.circle(self.gra.screen, self.colour,(int(self.pix_pos.x), int(self.pix_pos.y)) ,self.radius)
+        #self.screen.blit(self.mozg, (int(mozdzek.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2-8, int(mozdzek.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2-8))
+        if self.number==0:
+            self.gra.screen.blit(self.gra.duszek1, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
+        if self.number==1:
+            self.gra.screen.blit(self.gra.duszek2, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
+        if self.number==2:
+            self.gra.screen.blit(self.gra.duszek3, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
+        if self.number==3:
+            self.gra.screen.blit(self.gra.duszek4, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
 # znowu pozycjonowanie duszków
     def get_pix_pos(self):
         return Vector2((self.grid_pos.x*self.gra.cell_width)+TOP_BOTTOM_BUFFER//2+self.gra.cell_width//2, (self.grid_pos.y*self.gra.cell_height)+ TOP_BOTTOM_BUFFER//2+self.gra.cell_height//2)
