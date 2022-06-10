@@ -37,7 +37,7 @@ class Gra:
         self.cell_height = MAZE_HEIGHT//30
         self.gracz=Gracz(self, PLAYER_START_POS)
         self.sciany = []
-        self.kulkas = []
+        self.punkty = []
         self.duszki = []
 # pozycja duszków
         self.d_pos = []
@@ -53,7 +53,6 @@ class Gra:
         while self.running:
             if self.state == 'start':
                 self.start_events()
-                self.start_update()
                 self.start_draw()
             elif self.state == 'playing':
                 self.playing_events()
@@ -83,13 +82,10 @@ class Gra:
     # to zostawiłam tylko dlatego, bo bez teo nie działa mi program XD a jest bardzo późno
 
 
-# załadowanie grafik
+# załadowanie tła i innych grafik
     def load(self):
         self.background = pygame.image.load('background.png')
         self.background = pygame.transform.scale(self.background, (MAZE_WIDTH, MAZE_HEIGHT))
-        
-        self.punkt = pygame.image.load("brain.png")
-        self.punkt = pygame.transform.scale(self.punkt, (15,15))
 
         # ściany, cyfra 1 to ściana, litera C punkty, P pozycja Pacmana, 2,3,4,5 pozycje duchów i E to wyjście z tego pokoiku duchów
         with open("sciany.txt", 'r') as file:
@@ -98,14 +94,27 @@ class Gra:
                     if char == "1":
                         self.sciany.append(Vector2(xidx, yidx))
                     elif char == "C":
-                        self.kulkas.append(Vector2(xidx, yidx))
+                        self.punkty.append(Vector2(xidx, yidx))
                     elif char == "P":
                         self.g_pos = [xidx, yidx]
                     elif char in ["2", "3", "4", "5"]:
                         self.d_pos.append([xidx, yidx])
                     elif char == "E":
                         pygame.draw.rect(self.background, BLACK, (xidx*self.cell_width, yidx*self.cell_height, self.cell_width, self.cell_height))
-        # print(self.sciany)
+        #
+        self.mozg = pygame.image.load('brain.png')
+        self.mozg = pygame.transform.scale(self.mozg, (MAZE_WIDTH//36, MAZE_HEIGHT//38))
+        self.duszek1=pygame.image.load('ghost-blinky.png')
+        self.duszek1=pygame.transform.scale(self.duszek1, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
+        self.duszek2=pygame.image.load('ghost-inky.png')
+        self.duszek2=pygame.transform.scale(self.duszek2, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
+        self.duszek3=pygame.image.load('ghost-pinky.png')
+        self.duszek3=pygame.transform.scale(self.duszek3, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
+        self.duszek4=pygame.image.load('ghost-sue.png')
+        self.duszek4=pygame.transform.scale(self.duszek4, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
+        self.pacman=pygame.image.load('start.png')
+        self.pacman=pygame.transform.scale(self.pacman,(MAZE_WIDTH//32, MAZE_HEIGHT//34))
+
 
     def stworz_duszki(self):
         for idx, pos in enumerate(self.d_pos):
@@ -117,10 +126,10 @@ class Gra:
             pygame.draw.line(self.background, GREY, (x*self.cell_width, 0), (x*self.cell_width, HEIGHT))
         for x in range(HEIGHT//self.cell_height):
             pygame.draw.line(self.background, GREY, (0, x*self.cell_height), (WIDTH, x*self.cell_height))
-        for kulka in self.kulkas:
-            pygame.draw.rect(self.background,(112,55,163), (kulka.x*self.cell_width, kulka.y*self.cell_height, self.cell_width, self.cell_height))
+        for punkt in self.punkty:
+            pygame.draw.rect(self.background,(112,55,163), (punkt.x*self.cell_width, punkt.y*self.cell_height, self.cell_width, self.cell_height))
 
-# ################### INTRO FUNCTIONS ###############################
+
 # okno startowe gry, odpalamy za pomocą spacji
     def start_events(self):
         for event in pygame.event.get():
@@ -129,8 +138,6 @@ class Gra:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self.state = 'playing'
 
-    def start_update(self):
-        pass
 
     def start_draw(self):
         self.screen.fill(BLACK)
@@ -167,7 +174,7 @@ class Gra:
         self.screen.fill(BLACK)
         self.screen.blit(self.background, (TOP_BOTTOM_BUFFER//2, TOP_BOTTOM_BUFFER//2))
 
-        self.draw_kulkas()
+        self.wyswietl_punkty()
         # grid włączamy i wyłączamy, ja zostawiłam wyłączony
         #self.draw_grid()
         self.komunikat_tekstowy("twój wynik: {}".format(self.gracz.wynik),self.screen, [60, 0], 16, WHITE, START_FONT)
@@ -178,12 +185,10 @@ class Gra:
         pygame.display.update()
 
 
-# rysowanie punktów- grafika (Sa pamiętaj proszę o zmienieniu nazw zmiennych <3)
-    def draw_punkty(self):
+# punkty 
+    def wyswietl_punkty(self):
         for punkt in self.punkty:
-            self.screen.blit(self.punkt, (int(punkt.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//3, 
-                                          int(punkt.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//3))
-    
+            self.screen.blit(self.mozg, (int(punkt.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2-8, int(punkt.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2-8))
 
 #śmierć zgon koniecżycia umieranie spoczynek unicestwienie odejście konanie
     def smierc(self):
