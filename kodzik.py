@@ -78,8 +78,6 @@ class Gra:
             pos[1] = pos[1]-text_size[1]//2
         screen.blit(text, pos)
 
-    # tu trzeba dopracować ten ekran, wyśrodkować, dodać napisy, ustalić czcionkę itp ale to moze się tym ktoś pobawić
-    # to zostawiłam tylko dlatego, bo bez teo nie działa mi program XD a jest bardzo późno
 
 
 # załadowanie tła i innych grafik
@@ -104,16 +102,16 @@ class Gra:
         #
         self.mozg = pygame.image.load('brain.png')
         self.mozg = pygame.transform.scale(self.mozg, (MAZE_WIDTH//36, MAZE_HEIGHT//38))
-        self.duszek1=pygame.image.load('ghost-blinky.png')
-        self.duszek1=pygame.transform.scale(self.duszek1, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
-        self.duszek2=pygame.image.load('ghost-inky.png')
-        self.duszek2=pygame.transform.scale(self.duszek2, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
-        self.duszek3=pygame.image.load('ghost-pinky.png')
-        self.duszek3=pygame.transform.scale(self.duszek3, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
-        self.duszek4=pygame.image.load('ghost-sue.png')
-        self.duszek4=pygame.transform.scale(self.duszek4, (MAZE_WIDTH//32, MAZE_HEIGHT//34))
+        self.duszek1=pygame.image.load('ghost-red.png')
+        self.duszek1=pygame.transform.scale(self.duszek1, (MAZE_WIDTH//26, MAZE_HEIGHT//28))
+        self.duszek2=pygame.image.load('ghost-blue.png')
+        self.duszek2=pygame.transform.scale(self.duszek2, (MAZE_WIDTH//26, MAZE_HEIGHT//28))
+        self.duszek3=pygame.image.load('ghost-pink.png')
+        self.duszek3=pygame.transform.scale(self.duszek3, (MAZE_WIDTH//26, MAZE_HEIGHT//28))
+        self.duszek4=pygame.image.load('ghost-orange.png')
+        self.duszek4=pygame.transform.scale(self.duszek4, (MAZE_WIDTH//26, MAZE_HEIGHT//28))
         self.pacman=pygame.image.load('start.png')
-        self.pacman=pygame.transform.scale(self.pacman,(MAZE_WIDTH//32, MAZE_HEIGHT//34))
+        self.pacman=pygame.transform.scale(self.pacman,(MAZE_WIDTH//26, MAZE_HEIGHT//28))
 
 
     def stworz_duszki(self):
