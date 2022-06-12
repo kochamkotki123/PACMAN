@@ -17,8 +17,7 @@ PLAYER_COLOUR = (190,194,15)
 START_TEXT_SIZE = 16
 START_FONT = 'arial black'
 # ustawienia związane z graczem
-PLAYER_START_POS = 0
-
+PLAYER_START_POS = Vector2(1,1)
 # avatar którego nie umiem jeszcze umieścić zamiast zółtej kropki
 image= pygame.image.load('start.png')
 
@@ -56,7 +55,7 @@ class Gracz:
 
     def draw(self):
 # żółte kółko ;-;
-#już nie! :D 
+#już nie! :D
         self.gra.screen.blit(self.gra.pacman,(int(self.pix_pos.x)-8,  int(self.pix_pos.y)-8))
 
 
