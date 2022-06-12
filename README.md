@@ -1,7 +1,8 @@
 nasz pacmanowski kodzik :)
 
 grę odpala się w pliku kodzik.py - aby zadziałała, należy wszystkie grafiki (i pozostałe pliki z kodem) umieścić we wspólnym folderze.
-postacią kieruje się przy użyciu strzałek.
+
+postacią kieruje się przy użyciu strzałek lub przycisków WASD. <3
 
 
 główne źródła, do których się zwracałyśmy w razie problemów:
