@@ -3,50 +3,49 @@ import random
 from pygame.math import Vector2
 
 # ustawienia ekranu
-WIDTH, HEIGHT = 610, 670
+SZEROKOSC, WYSOKOSC = 610, 670
 FPS = 60
-TOP_BOTTOM_BUFFER = 50
-MAZE_WIDTH, MAZE_HEIGHT = WIDTH-TOP_BOTTOM_BUFFER, HEIGHT - TOP_BOTTOM_BUFFER
+BUFOR = 50
+SZEROKOSC_LABIRYNTU, WYSOKOSC_LABIRYNTU = SZEROKOSC-BUFOR, WYSOKOSC - BUFOR
 
 # ustawienia kolorów
-BLACK = (0, 0, 0)
-RED = (208, 22, 22)
-GREY = (107, 107, 107)
-WHITE = (255,255,255)
-PLAYER_COLOUR = (190,194,15)
+CZERN = (0, 0, 0)
+CZERWIEN = (208, 22, 22)
+SZAROSC = (107, 107, 107)
+BIEL = (255,255,255)
+KOLOR_GRACZA = (190,194,15)
 # ustawienia czcionki
 START_TEXT_SIZE = 16
-START_FONT = 'arial black'
-
+FONT = 'arial black'
 
 # cała klasa duszków, ich ilość, pozycje
 class Duszek:
-    def __init__(self, gra, pos, number):
+    def __init__(self, gra, pos, numer):
         self.gra = gra
         self.grid_pos = pos
         self.pix_pos = self.get_pix_pos()
-        self.radius = int(self.gra.cell_width//2.3)
-        self.number = number
+        self.radius = int(self.gra.szerokosc_komorki//2.3)
+        self.numer = numer
         self.colour = self.set_colour()
         self.kierunek = Vector2(0,0)
         self.usposobienie = self.ustaw_usposobienie()
         self.predkosc = self.ustaw_predkosc()
         self.pozycja_poczatkowa=[pos[0],pos[1]]
 
-
+#opcje związane z ruchem duszków i gonieniem pacmana
     def update(self):
         self.pix_pos += self.kierunek*self.predkosc
         if self.czas_na_ruch():
             self.ruch()
                         #pozycjonowako
-        self.grid_pos[0] = (self.pix_pos[0]-TOP_BOTTOM_BUFFER+self.gra.cell_width//2)//self.gra.cell_width+1
-        self.grid_pos[1] = (self.pix_pos[1]-TOP_BOTTOM_BUFFER+self.gra.cell_height//2)//self.gra.cell_height+1
+        self.grid_pos[0] = (self.pix_pos[0]-BUFOR+self.gra.szerokosc_komorki//2)//self.gra.szerokosc_komorki+1
+        self.grid_pos[1] = (self.pix_pos[1]-BUFOR+self.gra.wysokosc_komorki//2)//self.gra.wysokosc_komorki+1
 
     def czas_na_ruch(self):
-        if int(self.pix_pos.x+TOP_BOTTOM_BUFFER//2) % self.gra.cell_width == 0:
+        if int(self.pix_pos.x+BUFOR//2) % self.gra.szerokosc_komorki == 0:
             if self.kierunek == Vector2(1,0) or self.kierunek == Vector2(-1,0) or self.kierunek == Vector2(0, 0):
                 return True
-        if int(self.pix_pos.y+TOP_BOTTOM_BUFFER//2) % self.gra.cell_height == 0:
+        if int(self.pix_pos.y+BUFOR//2) % self.gra.wysokosc_komorki == 0:
             if self.kierunek == Vector2(0,1) or self.kierunek == Vector2(0,-1) or self.kierunek == Vector2(0, 0):
                 return True
         return False
@@ -59,25 +58,25 @@ class Duszek:
 
     def losowy_kierunek(self):
         while True:
-            number = random.randint(-2,1)
-            if number ==-2:
-                x_dir, y_dir = 0,1
-            elif number ==-1:
-                x_dir, y_dir = 0,-1
-            elif number ==0:
-                x_dir, y_dir = -1,0
+            numer = random.randint(-2,1)
+            if numer ==-2:
+                x_kierunek, y_kierunek = 0,1
+            elif numer ==-1:
+                x_kierunek, y_kierunek = 0,-1
+            elif numer ==0:
+                x_kierunek, y_kierunek = -1,0
             else:
-                x_dir, y_dir = 1,0
-            next_pos=Vector2(self.grid_pos.x+x_dir, self.grid_pos.y+y_dir)
+                x_kierunek, y_kierunek = 1,0
+            next_pos=Vector2(self.grid_pos.x+x_kierunek, self.grid_pos.y+y_kierunek)
             if next_pos not in self.gra.sciany:
                 break
-        return Vector2(x_dir, y_dir)
+        return Vector2(x_kierunek, y_kierunek)
 
     def wyznacz_trase(self):
         nastepna_komorka = self.wyznacz_nastepna_komorke()
-        xdir = nastepna_komorka[0] - self.grid_pos[0]
-        ydir = nastepna_komorka[1] - self.grid_pos[1]
-        return Vector2(xdir, ydir)
+        xkierunek = nastepna_komorka[0] - self.grid_pos[0]
+        ykierunek = nastepna_komorka[1] - self.grid_pos[1]
+        return Vector2(xkierunek, ykierunek)
 
     def wyznacz_nastepna_komorke(self):
         trasa = self.przeszukaj([int(self.grid_pos.x), int(self.grid_pos.y)], [int(self.gra.gracz.grid_pos.x), int(self.gra.gracz.grid_pos.y)])
@@ -85,9 +84,9 @@ class Duszek:
 
     def przeszukaj(self, start, ofiara):
         grid = [[0 for x in range(28)] for x in range(30)]
-        for cell in self.gra.sciany:
-            if cell.x <28 and cell.y <30:
-                grid[int(cell.y)][int(cell.x)] = 1
+        for komorka in self.gra.sciany:
+            if komorka.x <28 and komorka.y <30:
+                grid[int(komorka.y)][int(komorka.x)] = 1
         w_kolejce = [start]
         trasa = []
         sprawdzone = []
@@ -119,38 +118,39 @@ class Duszek:
 
 # umieszczenie duszków na ekranie
     def draw(self):
-        #self.screen.blit(self.mozg, (int(mozdzek.x*self.cell_width)+self.cell_width//2+TOP_BOTTOM_BUFFER//2-8, int(mozdzek.y*self.cell_height)+self.cell_height//2+TOP_BOTTOM_BUFFER//2-8))
-        if self.number==0:
+        if self.numer==0:
             self.gra.screen.blit(self.gra.duszek1, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
-        if self.number==1:
+        if self.numer==1:
             self.gra.screen.blit(self.gra.duszek2, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
-        if self.number==2:
+        if self.numer==2:
             self.gra.screen.blit(self.gra.duszek3, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
-        if self.number==3:
+        if self.numer==3:
             self.gra.screen.blit(self.gra.duszek4, (int(self.pix_pos.x)-8, int(self.pix_pos.y)-8))
+
 # znowu pozycjonowanie duszków
     def get_pix_pos(self):
-        return Vector2((self.grid_pos.x*self.gra.cell_width)+TOP_BOTTOM_BUFFER//2+self.gra.cell_width//2, (self.grid_pos.y*self.gra.cell_height)+ TOP_BOTTOM_BUFFER//2+self.gra.cell_height//2)
+        return Vector2((self.grid_pos.x*self.gra.szerokosc_komorki)+BUFOR//2+self.gra.szerokosc_komorki//2, (self.grid_pos.y*self.gra.wysokosc_komorki)+ BUFOR//2+self.gra.wysokosc_komorki//2)
         print(self.grid_pos, self.pix_pos)
-# każda cyfra to osobny duszek i jego kolor, jeszcze nie ogarnęłam jak wrzucić w to avatary
+
+#każda cyfra to osobny duszek i jego kolor
     def set_colour(self):
-        if self.number == 0:
+        if self.numer == 0:
             return (43, 78, 203)
-        if self.number == 1:
+        if self.numer == 1:
             return (255, 192, 203)
-        if self.number == 2:
+        if self.numer == 2:
             return (189, 29, 29)
-        if self.number == 3:
+        if self.numer == 3:
             return (255, 69, 0)
 
     def ustaw_usposobienie(self):
-        if self.number == 0:
+        if self.numer == 0:
             return "losowy"
-        if self.number == 1:
+        if self.numer == 1:
             return "szybki"
-        if self.number == 2:
+        if self.numer == 2:
             return "normalny"
-        if self.number ==3:
+        if self.numer ==3:
             return "wolny"
 
     def ustaw_predkosc(self):
@@ -161,7 +161,6 @@ class Duszek:
         else:
             predkosc=2
         return predkosc
-
 
     def ustaw_ofiare(self):
         if self.usposobienie in ["wolny","szybki"]:
